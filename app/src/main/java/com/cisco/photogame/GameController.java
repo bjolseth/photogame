@@ -1,6 +1,5 @@
 package com.cisco.photogame;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
@@ -13,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameController {
@@ -24,15 +22,20 @@ public class GameController {
     private Dude currentPiece;
     private TextView dbgText;
     private Context context;
+    private long startTime;
+    private Highscore highscore;
 
     public GameController(View game) {
         this.game = game;
         this.context = game.getContext();
-        dudes = Positions.defineHitAreas();
+
+        highscore = new Highscore(context);
         setListeners();
-        setNextPiece();
         dbgText = (TextView) game.findViewById(R.id.distancedebug);
+        startGame();
     }
+
+
 
     private void setNextPiece() {
         int index = (int) Math.floor(Math.random() * dudes.size());
@@ -40,7 +43,13 @@ public class GameController {
         ((ImageView) game.findViewById(R.id.puzzle_piece)).setImageResource(currentPiece.getBitmapId());
     }
 
-    private boolean foundRightSpot(Point pos, Dude dude) {
+    private void startGame() {
+        dudes = Positions.defineHitAreas();
+        setNextPiece();
+        startTime = System.currentTimeMillis();
+    }
+
+    private boolean checkSpot(Point pos, Dude dude) {
         int dx = pos.x - dude.getPosition().x;
         int dy = pos.y - dude.getPosition().y;
         int dist = (int) Math.sqrt(dx*dx + dy*dy);
@@ -71,12 +80,12 @@ public class GameController {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
                 if (dragEvent.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
-                    foundRightSpot(new Point((int) dragEvent.getX(), (int) dragEvent.getY()), currentPiece);
+                    checkSpot(new Point((int) dragEvent.getX(), (int) dragEvent.getY()), currentPiece);
                     //debug("drag on %d,%d", (int) dragEvent.getX(), (int) dragEvent.getY());
                 }
                 else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
                     Point drop = new Point((int) dragEvent.getX(), (int) dragEvent.getY());
-                    if (foundRightSpot(drop, currentPiece))
+                    if (checkSpot(drop, currentPiece))
                         spotFound(drop, currentPiece);
                 }
                 return true;
@@ -107,11 +116,24 @@ public class GameController {
 
     }
 
+    private int[] elapsedTime() {
+        int time = (int) ((System.currentTimeMillis() - startTime) / 1000);
+        int mins = time / 60;
+        time = time - mins * 60;
+        int secs = time;
+        return new int[]{mins, secs, time};
+    }
+
     private void gameFinished() {
         game.findViewById(R.id.puzzle_piece).setVisibility(View.GONE);
+
         int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(context, "Game finished!", duration);
+        int[] time = elapsedTime();
+        Toast toast = Toast.makeText(context, String.format("Game finished, time: %d:%d", time[0], time[1]), duration);
         toast.show();
+
+        highscore.saveHighscore(time[2], "time=" + time[2]);
+        highscore.debugHighscore();
     }
 
     public static void debug(String message, Object ... args) {
