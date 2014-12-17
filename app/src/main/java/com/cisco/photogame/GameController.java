@@ -18,12 +18,13 @@ public class GameController {
 
     private List<Dude> dudes;
     private View game;
-    private static final int ACCEPTED_DISTANCE = 50;
+    private static final int ACCEPTED_DISTANCE = 80;
     private Dude currentPiece;
     private TextView dbgText;
     private Context context;
     private long startTime;
     private Highscore highscore;
+    private int totalDudeCount;
 
     public GameController(View game) {
         this.game = game;
@@ -41,10 +42,13 @@ public class GameController {
         int index = (int) Math.floor(Math.random() * dudes.size());
         currentPiece = dudes.remove(index);
         ((ImageView) game.findViewById(R.id.puzzle_piece)).setImageResource(currentPiece.getBitmapId());
+        updateProgress();
     }
 
     private void startGame() {
-        dudes = Positions.defineHitAreas();
+        game.findViewById(R.id.puzzle_piece).setVisibility(View.VISIBLE);
+        dudes = Positions.getDudes();
+        totalDudeCount = dudes.size();
         setNextPiece();
         startTime = System.currentTimeMillis();
     }
@@ -58,9 +62,9 @@ public class GameController {
         debug2("%d, %d - %d", pos.x, pos.y, dist);
 
         if (dist < ACCEPTED_DISTANCE)
-            dbgText.setBackgroundColor(0xFF009900);
+            dbgText.setBackgroundColor(0x99009900);
         else
-            dbgText.setBackgroundColor(0xFF990000);
+            dbgText.setBackgroundColor(0x99990000);
 
         return (dist < ACCEPTED_DISTANCE);
     }
@@ -94,6 +98,17 @@ public class GameController {
                 return true;
             }
         });
+
+        game.findViewById(R.id.restart_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restartGame();
+            }
+        });
+    }
+
+    private void restartGame() {
+        startGame();
     }
 
     private void spotFound(Point pos, Dude dude) {
@@ -101,10 +116,18 @@ public class GameController {
 
         //addPieceToBoard(pos, dude);
 
-        if (! dudes.isEmpty())
+        if (! dudes.isEmpty()) {
             setNextPiece();
+            updateProgress();
+        }
         else
             gameFinished();
+    }
+
+    private void updateProgress() {
+        TextView progress = (TextView) game.findViewById(R.id.progress);
+        int count = totalDudeCount - dudes.size() - 1;
+        progress.setText(String.format("%d / %d", count, totalDudeCount));
     }
 
     private void addPieceToBoard(Point dropPos, Dude dude) {

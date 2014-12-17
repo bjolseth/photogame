@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Positions {
 
-    public static List<Dude> defineHitAreas() {
+    public static List<Dude> getDudes() {
         List<Dude> piecePositions = new ArrayList<Dude>();
         piecePositions.add(new Dude("Jorgen", R.drawable.dude_6, new Point(1219, 830)));
         piecePositions.add(new Dude("Martin", R.drawable.dude_10, new Point(1232, 247)));
