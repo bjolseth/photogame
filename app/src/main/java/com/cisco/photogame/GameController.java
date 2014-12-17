@@ -55,6 +55,8 @@ public class GameController {
         int dist = (int) Math.sqrt(dx*dx + dy*dy);
         //debug("distance %d", dist);
         //dbgText.setText("distance: " + dist);
+        debug2("%d, %d - %d", pos.x, pos.y, dist);
+
         if (dist < ACCEPTED_DISTANCE)
             dbgText.setBackgroundColor(0xFF009900);
         else
@@ -64,12 +66,14 @@ public class GameController {
     }
 
     private void setListeners() {
+        final float scaleFactor = 0.4f; // todo find out what this actually should be on iltempo
+
         View piece = game.findViewById(R.id.puzzle_piece);
         piece.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    view.startDrag(null, new View.DragShadowBuilder(view), view, 0);
+                    view.startDrag(null, new DragShadow(view, currentPiece.getBitmapId(), scaleFactor), view, 0);
                 }
                 return true;
             }
@@ -81,7 +85,6 @@ public class GameController {
             public boolean onDrag(View view, DragEvent dragEvent) {
                 if (dragEvent.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
                     checkSpot(new Point((int) dragEvent.getX(), (int) dragEvent.getY()), currentPiece);
-                    debug2("%d,%d", (int) dragEvent.getX(), (int) dragEvent.getY());
                 }
                 else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
                     Point drop = new Point((int) dragEvent.getX(), (int) dragEvent.getY());
@@ -96,7 +99,7 @@ public class GameController {
     private void spotFound(Point pos, Dude dude) {
         debug("Found spot for %s", dude.getName());
 
-        addPieceToBoard(pos, dude);
+        //addPieceToBoard(pos, dude);
 
         if (! dudes.isEmpty())
             setNextPiece();
