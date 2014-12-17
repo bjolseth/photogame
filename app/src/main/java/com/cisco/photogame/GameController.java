@@ -31,7 +31,7 @@ public class GameController {
 
         highscore = new Highscore(context);
         setListeners();
-        dbgText = (TextView) game.findViewById(R.id.distancedebug);
+        dbgText = (TextView) game.findViewById(R.id.debug);
         startGame();
     }
 
@@ -54,7 +54,7 @@ public class GameController {
         int dy = pos.y - dude.getPosition().y;
         int dist = (int) Math.sqrt(dx*dx + dy*dy);
         //debug("distance %d", dist);
-        dbgText.setText("distance: " + dist);
+        //dbgText.setText("distance: " + dist);
         if (dist < ACCEPTED_DISTANCE)
             dbgText.setBackgroundColor(0xFF009900);
         else
@@ -81,7 +81,7 @@ public class GameController {
             public boolean onDrag(View view, DragEvent dragEvent) {
                 if (dragEvent.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
                     checkSpot(new Point((int) dragEvent.getX(), (int) dragEvent.getY()), currentPiece);
-                    //debug("drag on %d,%d", (int) dragEvent.getX(), (int) dragEvent.getY());
+                    debug2("%d,%d", (int) dragEvent.getX(), (int) dragEvent.getY());
                 }
                 else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
                     Point drop = new Point((int) dragEvent.getX(), (int) dragEvent.getY());
@@ -134,6 +134,11 @@ public class GameController {
 
         highscore.saveHighscore(time[2], "time=" + time[2]);
         highscore.debugHighscore();
+    }
+
+    public void debug2(String message, Object ... args) {
+        ((TextView) game.findViewById(R.id.debug)).setText(String.format(message, args));
+        Log.i("photogame", String.format(message, args));
     }
 
     public static void debug(String message, Object ... args) {
