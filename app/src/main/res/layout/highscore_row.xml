@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:padding="10dp"
+        >
+
+    <TextView
+            android:id="@+id/highscore_position"
+            android:layout_width="100dp"
+            android:layout_height="fill_parent"
+            android:layout_centerVertical="true"
+            android:gravity="right"
+            android:textSize="30sp"
+            android:textColor="@color/lightgray"
+            android:text="@string/temp_position"
+            />
+
+    <TextView
+            android:id="@+id/highscore_time"
+            android:layout_width="100dp"
+            android:layout_height="fill_parent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:textSize="30sp"
+            android:textColor="@color/lightgray"
+            android:text="@string/tmp_score"
+            />
+    
+    <TextView
+            android:id="@+id/highscore_name"
+            android:layout_width="0dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="fill_parent"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/highscore_position"
+            android:layout_toLeftOf="@id/highscore_time"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:gravity="left"
+            android:textSize="30sp"
+            android:textColor="@color/lightgray"
+            android:text="@string/tmp_name"
+            />
+
+</RelativeLayout>

@@ -12,5 +12,9 @@
     <string name="username">Cisco username</string>
     <string name="debug">debug</string>
     <string name="your_score">Your score</string>
+    <string name="tmp_name">Tore</string>
+    <string name="tmp_score">03:32</string>
+    <string name="temp_position">1.</string>
+    <string name="go_back">Go back</string>
 
 </resources>

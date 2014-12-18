@@ -45,8 +45,8 @@ public class GameController {
     }
 
     private void setNextPiece() {
-        //int index = (int) Math.floor(Math.random() * dudes.size());
-        int index = 0;
+        int index = (int) (Math.random() * dudes.size());
+
         if (dudes.get(index) != null) {
             currentDude = dudes.remove(index);
             soundController.loadSound(currentDude.getAudioId());
@@ -226,8 +226,7 @@ public class GameController {
     private int[] elapsedTime() {
         int time = (int) ((System.currentTimeMillis() - startTime) / 1000);
         int mins = time / 60;
-        time = time - mins * 60;
-        int secs = time;
+        int secs = time - mins * 60;
         return new int[]{mins, secs, time};
     }
 

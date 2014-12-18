@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:textColor="@color/lightgray"
-        android:textSize="10sp"
+        android:textSize="22sp"
         android:text="@string/your_score"
-        />
+        android:layout_marginBottom="20dp"/>
 
     <TextView
         android:id="@+id/your_score"
@@ -24,7 +24,7 @@
         android:layout_below="@id/header"
         android:layout_centerHorizontal="true"
         android:textColor="@color/blue"
-        android:textSize="45sp"
+        android:textSize="100sp"
         android:text="@string/highscore_time"
         />
 
@@ -42,7 +42,34 @@
         android:background="#0000"
         android:imeOptions="flagNoExtractUi|actionDone"
         android:hint="@string/username"
-
+        android:visibility="visible"
         />
+
+    <ListView
+            android:id="@+id/highscore_list"
+            android:layout_width="600dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="40dp"
+            android:layout_below="@id/your_score"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            >
+            </ListView>
+    
+    <TextView
+            android:id="@+id/go_back_button"
+            android:layout_width="111dp"
+            android:layout_height="111dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="50dp"
+            android:background="@drawable/circle_small_yellow"
+            android:textColor="@color/yellow"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:text="@string/go_back"
+
+            />
 
 </RelativeLayout>
