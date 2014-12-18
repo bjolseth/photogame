@@ -24,6 +24,13 @@
             android:src="@drawable/pralines_faces2"
             android:alpha="0"
             />
+        <ImageView
+                android:id="@+id/spot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:src="@drawable/highlight"
+            />
     </RelativeLayout>
 
 
@@ -54,7 +61,8 @@
             android:gravity="right"
             android:layout_alignRight="@id/duration"
             android:layout_alignParentEnd="false"
-            android:layout_marginTop="3dp" android:textSize="20sp"/>
+            android:layout_marginTop="3dp"
+            android:textSize="20sp"/>
 
         <ImageView
             android:id="@+id/puzzle_piece"

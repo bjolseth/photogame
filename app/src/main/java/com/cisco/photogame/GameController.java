@@ -66,7 +66,7 @@ public class GameController {
         ((TextView) game.findViewById(R.id.duration)).setText("00:00");
         ((TextView) game.findViewById(R.id.restart_button)).setText("Restart");
 
-        soundController.playSound();
+        soundController.playNextDudeSound();
     }
 
     private boolean checkSpot(Point pos, Dude dude) {
@@ -116,14 +116,17 @@ public class GameController {
                 Point drop = new Point((int) dragEvent.getX(), (int) dragEvent.getY());
 
                 if (dragEvent.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
-                    if (checkSpot(drop, currentDude)) {
-                        spotFound(drop, currentDude);
-                    }
+
+                    markTheSpot(currentDude, checkSpot(drop, currentDude));
 
                 } else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
 
                     if (checkSpot(drop, currentDude))
                         spotFound(drop, currentDude);
+                    else
+                        soundController.playDoh();
+
+                    markTheSpot(currentDude, false);
                 }
                 return true;
             }
@@ -135,6 +138,23 @@ public class GameController {
                 restartGame();
             }
         });
+    }
+
+    private void markTheSpot(Dude dude, boolean show) {
+        View mark = game.findViewById(R.id.spot);
+        boolean isAlreadyVisible = mark.getVisibility() == View.VISIBLE;
+
+        if (show && ! isAlreadyVisible) {
+            RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) mark.getLayoutParams();
+            p.leftMargin = dude.getPosition().x - 50;
+            p.topMargin = dude.getPosition().y - 50;
+            mark.setLayoutParams(p);
+            mark.setVisibility(View.VISIBLE);
+        }
+
+        else if (! show && isAlreadyVisible) {
+            mark.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void restartGame() {
@@ -158,6 +178,7 @@ public class GameController {
     private void removeCompletedDudes() {
         View mainPhoto = game.findViewById(R.id.gamephoto);
         View facesPhoto = game.findViewById(R.id.completed_gamephoto);
+        View spot = game.findViewById(R.id.spot);
 
         ViewGroup frame = ((ViewGroup) game.findViewById(R.id.photo_container));
 
@@ -165,12 +186,13 @@ public class GameController {
 
         frame.addView(mainPhoto);
         frame.addView(facesPhoto);
+        frame.addView(spot);
     }
 
     private void spotFound(Point pos, Dude dude) {
         //debug("Found spot for %s", dude.getName());
         addPieceToBoard(pos, dude);
-        soundController.playSound();
+        soundController.playNextDudeSound();
 
         if (! dudes.isEmpty()) {
             setNextPiece();
@@ -198,7 +220,7 @@ public class GameController {
         p.setMargins(pos.x - w/2, pos.y - h/2, 0, 0);
         view.setLayoutParams(p);
         ((ViewGroup) game.findViewById(R.id.photo_container)).addView(view);
-        }
+    }
 
     private int[] elapsedTime() {
         int time = (int) ((System.currentTimeMillis() - startTime) / 1000);

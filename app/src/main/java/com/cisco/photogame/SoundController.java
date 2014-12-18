@@ -13,36 +13,47 @@ public class SoundController {
 
     private HashMap<Integer, Integer> soundPoolMap;
     private AudioManager audioManager;
-    private int singleIndex = 0;
-    private static final int VOLUME = 2;
+    private int DUDE_INDEX = 0;
+    private int DOH_INDEX = 1;
+    private static final int VOLUME = 4;
 
     public SoundController(Context context) {
         this.context = context;
         initSounds();
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
-        // who knows....
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, VOLUME, 0);
+        //audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, VOLUME, 0);
     }
 
     private void initSounds() {
 
-        int maxStreams = 1;
-        soundPool = new SoundPool(maxStreams, AudioManager.STREAM_MUSIC, 100);
+        int maxStreams = 2;
+        soundPool = new SoundPool(maxStreams, AudioManager.STREAM_RING, 100);
 
         soundPoolMap = new HashMap<Integer, Integer>();
+
+        soundPoolMap.put(DOH_INDEX, soundPool.load(context, R.raw.doh, 1));
     }
 
     public void loadSound(int rawId) {
-        soundPoolMap.put(singleIndex, soundPool.load(context, rawId, 1));
+        soundPoolMap.put(DUDE_INDEX, soundPool.load(context, rawId, 1));
     }
 
-    public void playSound() {
+    public void playDoh() {
+        play(DOH_INDEX);
+    }
+
+    public void playNextDudeSound() {
+        play(DUDE_INDEX);
+    }
+
+    private void play(int index) {
         int priority = 1;
         int loop = 0;
         int volume = 3;
         float pitch = 1f;
-        soundPool.play(soundPoolMap.get(singleIndex), volume, volume, priority, loop, pitch);
+        soundPool.play(soundPoolMap.get(index), volume, volume, priority, loop, pitch);
+
     }
 
 }
