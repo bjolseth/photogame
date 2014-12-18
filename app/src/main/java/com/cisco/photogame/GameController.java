@@ -9,6 +9,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,7 +39,6 @@ public class GameController {
         this.dbgText = (TextView) game.findViewById(R.id.debug);
 
         setListeners();
-        startGame();
     }
 
     private void setNextPiece() {
@@ -55,6 +55,7 @@ public class GameController {
         startTime = System.currentTimeMillis();
         timer.postDelayed(updateTimerTask, 1000);
         ((TextView) game.findViewById(R.id.duration)).setText("00:00");
+        ((TextView) game.findViewById(R.id.restart_button)).setText("Restart");
     }
 
     private boolean checkSpot(Point pos, Dude dude) {
@@ -119,6 +120,11 @@ public class GameController {
     }
 
     private void setCompletePhotoAlpha(float alpha) {
+//        float start = (alpha > 0 ? 0 : 1);
+//        AlphaAnimation fade = new AlphaAnimation(start, alpha);
+//        fade.setDuration(1000);
+//        fade.setFillAfter(true);
+//        game.findViewById(R.id.completed_gamephoto).startAnimation(fade);
         game.findViewById(R.id.completed_gamephoto).setAlpha(alpha);
     }
 
@@ -146,12 +152,13 @@ public class GameController {
         }
         else
             gameFinished();
+
     }
 
     private void updateProgress() {
         TextView progress = (TextView) game.findViewById(R.id.progress);
         int count = totalDudeCount - dudes.size() - 1;
-        progress.setText(String.format("%d / %d", count, totalDudeCount));
+        progress.setText(String.format("%d/%d", count, totalDudeCount));
     }
 
     private void addPieceToBoard(Point dropPos, Dude dude) {
@@ -161,8 +168,8 @@ public class GameController {
         view.setImageResource(dude.getBitmapId());
         int w = (int) (drawable.getIntrinsicWidth() * scaleFactor);
         int h = (int) (drawable.getIntrinsicHeight() * scaleFactor);
-        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(w, w);
-        p.setMargins(pos.x - w/2, pos.y - w/2, 0, 0);
+        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(w, h);
+        p.setMargins(pos.x - w/2, pos.y - h/2, 0, 0);
         view.setLayoutParams(p);
         ((ViewGroup) game.findViewById(R.id.photo_container)).addView(view);
 
@@ -183,6 +190,7 @@ public class GameController {
     private void gameFinished() {
         stopTimerTask();
         game.findViewById(R.id.puzzle_piece).setVisibility(View.GONE);
+        ((TextView) game.findViewById(R.id.progress)).setText(totalDudeCount + "/" + totalDudeCount);
         setCompletePhotoAlpha(1);
 
         int duration = Toast.LENGTH_SHORT;
@@ -212,10 +220,11 @@ public class GameController {
             int secs = time[1];
 
             String str = String.format("%02d:%02d", minutes, secs);
-            debug("Updating time %s", str);
 
             ((TextView) game.findViewById(R.id.duration)).setText(str);
             timer.postDelayed(updateTimerTask, 1000);
         }
     };
+
+
 }
