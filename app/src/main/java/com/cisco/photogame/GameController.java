@@ -2,6 +2,7 @@ package com.cisco.photogame;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
@@ -25,6 +26,7 @@ public class GameController {
     private long startTime;
     private Highscore highscore;
     private int totalDudeCount;
+    private final float scaleFactor = 0.4f; // todo find out what this actually should be on iltempo
 
     public GameController(View game) {
         this.game = game;
@@ -46,7 +48,6 @@ public class GameController {
     }
 
     private void startGame() {
-        game.findViewById(R.id.puzzle_piece).setVisibility(View.VISIBLE);
         dudes = Positions.getDudes();
         totalDudeCount = dudes.size();
         setNextPiece();
@@ -70,7 +71,6 @@ public class GameController {
     }
 
     private void setListeners() {
-        final float scaleFactor = 0.4f; // todo find out what this actually should be on iltempo
 
         View piece = game.findViewById(R.id.puzzle_piece);
         piece.setOnTouchListener(new View.OnTouchListener() {
@@ -108,13 +108,23 @@ public class GameController {
     }
 
     private void restartGame() {
+        game.findViewById(R.id.puzzle_piece).setVisibility(View.VISIBLE);
+        removeCompletedDudes();
         startGame();
+    }
+
+    private void removeCompletedDudes() {
+        View mainPhoto = game.findViewById(R.id.gamephoto);
+        ViewGroup frame = ((ViewGroup) game.findViewById(R.id.photo_container));
+        frame.removeAllViews();
+        frame.addView(mainPhoto);
+
     }
 
     private void spotFound(Point pos, Dude dude) {
         debug("Found spot for %s", dude.getName());
 
-        //addPieceToBoard(pos, dude);
+        addPieceToBoard(pos, dude);
 
         if (! dudes.isEmpty()) {
             setNextPiece();
@@ -133,12 +143,14 @@ public class GameController {
     private void addPieceToBoard(Point dropPos, Dude dude) {
         Point pos = dude.getPosition();
         ImageView view = new ImageView(context);
+        Drawable drawable = context.getResources().getDrawable(dude.getBitmapId());
         view.setImageResource(dude.getBitmapId());
-        int w = 120;
+        int w = (int) (drawable.getIntrinsicWidth() * scaleFactor);
+        int h = (int) (drawable.getIntrinsicHeight() * scaleFactor);
         RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(w, w);
         p.setMargins(pos.x - w/2, pos.y - w/2, 0, 0);
         view.setLayoutParams(p);
-        ((ViewGroup) game).addView(view);
+        ((ViewGroup) game.findViewById(R.id.photo_container)).addView(view);
 
     }
 
