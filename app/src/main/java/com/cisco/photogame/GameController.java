@@ -56,7 +56,6 @@ public class GameController {
         timer.postDelayed(updateTimerTask, 1000);
         ((TextView) game.findViewById(R.id.duration)).setText("00:00");
         ((TextView) game.findViewById(R.id.restart_button)).setText("Restart");
-        soundController.playSound();
     }
 
     private boolean checkSpot(Point pos, Dude dude) {
