@@ -26,7 +26,9 @@ public class GameController {
     private Context context;
     private long startTime;
     private int totalDudeCount;
-    private final float scaleFactor = 1.21f; // todo find out what this actually should be on iltempo
+
+    // todo should be able to calculate this from image scaling measurements at runtime
+    private final float scaleFactor = 1.37f;
     private Handler timer;
     private SoundController soundController;
 
@@ -42,10 +44,15 @@ public class GameController {
     }
 
     private void setNextPiece() {
-        int index = (int) Math.floor(Math.random() * dudes.size());
-        currentPiece = dudes.remove(index);
-        ((ImageView) game.findViewById(R.id.puzzle_piece)).setImageResource(currentPiece.getBitmapId());
-        updateProgress();
+        //int index = (int) Math.floor(Math.random() * dudes.size());
+        int index = 0;
+        if (dudes.get(index) != null) {
+            currentPiece = dudes.remove(index);
+            ((ImageView) game.findViewById(R.id.puzzle_piece)).setImageResource(currentPiece.getBitmapId());
+            updateProgress();
+        }
+        else
+            debug2("Couldn't locate next piece index %d, dude size=%d", index, dudes.size());
     }
 
     private void startGame() {
@@ -141,7 +148,7 @@ public class GameController {
     }
 
     private void spotFound(Point pos, Dude dude) {
-        debug("Found spot for %s", dude.getName());
+        //debug("Found spot for %s", dude.getName());
         addPieceToBoard(pos, dude);
 
         if (! dudes.isEmpty()) {

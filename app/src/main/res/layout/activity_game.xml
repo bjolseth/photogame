@@ -10,14 +10,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="#9090"
         >
         <ImageView
             android:id="@+id/gamephoto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#9900"
-            android:src="@drawable/pralines_gray"
+            android:src="@drawable/pralines_gray2"
             />
         <ImageView
             android:id="@+id/completed_gamephoto"
@@ -30,7 +28,8 @@
 
 
     <RelativeLayout
-        android:layout_width="100dp"
+        android:layout_width="165dp"
+        android:id="@+id/menubar"
         android:layout_height="match_parent"
         android:padding="10dp"
         android:background="@color/darkgray"
