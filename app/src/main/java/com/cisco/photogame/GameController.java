@@ -3,6 +3,7 @@ package com.cisco.photogame;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
@@ -27,18 +28,18 @@ public class GameController {
     private Highscore highscore;
     private int totalDudeCount;
     private final float scaleFactor = 0.4f; // todo find out what this actually should be on iltempo
+    private Handler timer;
 
     public GameController(View game) {
         this.game = game;
         this.context = game.getContext();
+        this.timer = new Handler();
+        this.highscore = new Highscore(context);
+        this.dbgText = (TextView) game.findViewById(R.id.debug);
 
-        highscore = new Highscore(context);
         setListeners();
-        dbgText = (TextView) game.findViewById(R.id.debug);
         startGame();
     }
-
-
 
     private void setNextPiece() {
         int index = (int) Math.floor(Math.random() * dudes.size());
@@ -52,6 +53,8 @@ public class GameController {
         totalDudeCount = dudes.size();
         setNextPiece();
         startTime = System.currentTimeMillis();
+        timer.postDelayed(updateTimerTask, 1000);
+        ((TextView) game.findViewById(R.id.duration)).setText("00:00");
     }
 
     private boolean checkSpot(Point pos, Dude dude) {
@@ -108,6 +111,7 @@ public class GameController {
     }
 
     private void restartGame() {
+        stopTimerTask();
         setCompletePhotoAlpha(0);
         game.findViewById(R.id.puzzle_piece).setVisibility(View.VISIBLE);
         removeCompletedDudes();
@@ -120,9 +124,14 @@ public class GameController {
 
     private void removeCompletedDudes() {
         View mainPhoto = game.findViewById(R.id.gamephoto);
+        View facesPhoto = game.findViewById(R.id.completed_gamephoto);
+
         ViewGroup frame = ((ViewGroup) game.findViewById(R.id.photo_container));
+
         frame.removeAllViews();
+
         frame.addView(mainPhoto);
+        frame.addView(facesPhoto);
 
     }
 
@@ -167,10 +176,15 @@ public class GameController {
         return new int[]{mins, secs, time};
     }
 
+    private void stopTimerTask() {
+        timer.removeCallbacksAndMessages(null);
+    }
+
     private void gameFinished() {
+        stopTimerTask();
         game.findViewById(R.id.puzzle_piece).setVisibility(View.GONE);
         setCompletePhotoAlpha(1);
-        
+
         int duration = Toast.LENGTH_SHORT;
         int[] time = elapsedTime();
         Toast toast = Toast.makeText(context, String.format("Game finished, time: %d:%d", time[0], time[1]), duration);
@@ -182,11 +196,26 @@ public class GameController {
 
     public void debug2(String message, Object ... args) {
         ((TextView) game.findViewById(R.id.debug)).setText(String.format(message, args));
-        Log.i("photogame", String.format(message, args));
+        //Log.i("photogame", String.format(message, args));
     }
 
     public static void debug(String message, Object ... args) {
         Log.i("photogame", String.format(message, args));
     }
 
+
+    private Runnable updateTimerTask = new Runnable() {
+        @Override
+        public void run() {
+            int[] time = elapsedTime();
+            int minutes = time[0];
+            int secs = time[1];
+
+            String str = String.format("%02d:%02d", minutes, secs);
+            debug("Updating time %s", str);
+
+            ((TextView) game.findViewById(R.id.duration)).setText(str);
+            timer.postDelayed(updateTimerTask, 1000);
+        }
+    };
 }
