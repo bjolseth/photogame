@@ -29,6 +29,7 @@
         />
 
     <EditText
+        android:id="@+id/your_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -39,8 +40,9 @@
         android:singleLine="true"
         android:gravity="center"
         android:background="#0000"
-        android:imeOptions="flagNoExtractUi|actionSend"
-        android:text="name"
+        android:imeOptions="flagNoExtractUi|actionDone"
+        android:hint="Cisco username"
+
         />
 
 </RelativeLayout>
