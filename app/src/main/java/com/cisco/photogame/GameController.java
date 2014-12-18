@@ -188,7 +188,10 @@ public class GameController {
         ((TextView) game.findViewById(R.id.progress)).setText(totalDudeCount + "/" + totalDudeCount);
         setCompletePhotoAlpha(1);
 
+
+        int[] time = elapsedTime();
         Intent highscore = new Intent(context, HighscoreActivity.class);
+        highscore.putExtra("time", time[2]);
         context.startActivity(highscore);
 //        highscore.saveHighscore(time[2], "time=" + time[2]);
 //        highscore.debugHighscore();
