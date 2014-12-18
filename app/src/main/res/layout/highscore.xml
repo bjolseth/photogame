@@ -62,7 +62,7 @@
             android:layout_width="111dp"
             android:layout_height="111dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
+            android:layout_centerVertical="true"
             android:layout_margin="50dp"
             android:background="@drawable/circle_small_yellow"
             android:textColor="@color/yellow"

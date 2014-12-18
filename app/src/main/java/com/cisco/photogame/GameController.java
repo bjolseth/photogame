@@ -1,5 +1,6 @@
 package com.cisco.photogame;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -10,6 +11,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -161,19 +163,29 @@ public class GameController {
     private void restartGame() {
         stopTimerTask();
 //        isOnTheSpot = false;
-        setCompletePhotoAlpha(0);
+        setColorPhotoAlpha(0);
         game.findViewById(R.id.puzzle_piece).setVisibility(View.VISIBLE);
         removeCompletedDudes();
         startGame();
     }
 
-    private void setCompletePhotoAlpha(float alpha) {
-//        float start = (alpha > 0 ? 0 : 1);
-//        AlphaAnimation fade = new AlphaAnimation(start, alpha);
-//        fade.setDuration(1000);
-//        fade.setFillAfter(true);
-//        game.findViewById(R.id.completed_gamephoto).startAnimation(fade);
-        game.findViewById(R.id.completed_gamephoto).setAlpha(alpha);
+    private void setColorPhotoAlpha(float alpha) {
+        final View colorPhoto = game.findViewById(R.id.completed_gamephoto);
+        if (alpha < 1) {
+            colorPhoto.setAlpha(0);
+            return;
+        }
+
+        // Couldn't get the standard android alphaanimations to work
+        ValueAnimator anim = ValueAnimator.ofFloat(0f, alpha);
+        anim.setDuration(2000);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator value) {
+                colorPhoto.setAlpha((Float) value.getAnimatedValue());
+            }
+        });
+        anim.start();
     }
 
     private void removeCompletedDudes() {
@@ -238,10 +250,21 @@ public class GameController {
         stopTimerTask();
         game.findViewById(R.id.puzzle_piece).setVisibility(View.GONE);
         ((TextView) game.findViewById(R.id.progress)).setText(totalDudeCount + "/" + totalDudeCount);
-        setCompletePhotoAlpha(1);
+        setColorPhotoAlpha(1);
         removeCompletedDudes();
 
-        int[] time = elapsedTime();
+        final int[] time = elapsedTime();
+
+        Runnable runHighscore = new Runnable() {
+            @Override
+            public void run() {
+                goToHighscore(time);
+            }
+        };
+        new Handler().postDelayed(runHighscore, 4000);
+    }
+
+    private void goToHighscore(int[] time) {
         Intent highscore = new Intent(context, HighscoreActivity.class);
         highscore.putExtra("time", time[2]);
         context.startActivity(highscore);

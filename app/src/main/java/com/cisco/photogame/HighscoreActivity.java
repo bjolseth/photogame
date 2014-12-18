@@ -29,6 +29,14 @@ public class HighscoreActivity extends Activity {
         super.onCreate(bundle);
         setContentView(R.layout.highscore);
 
+        findViewById(R.id.go_back_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish(); // go back
+            }
+        });
+
+
         Bundle extra = getIntent().getExtras();
         if (extra != null && extra.getInt("time", -1) > 0) {
             seconds = extra.getInt("time");
@@ -63,22 +71,10 @@ public class HighscoreActivity extends Activity {
         Highscore highscore = new Highscore(this);
         List<Highscore.HighscoreItem> list = highscore.getList();
 
-//        ArrayList<String> names = new ArrayList<String>();
-//        for (int i = 0; i < list.size(); ++i) {
-//            names.add(list.get(i).name);
-//        }
-
         final StableArrayAdapter adapter = new StableArrayAdapter(this,
                 android.R.layout.simple_list_item_1, list);
         listview.setAdapter(adapter);
 
-
-        findViewById(R.id.go_back_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish(); // go back
-            }
-        });
     }
 
     private void saveScore(int time, String name) {
