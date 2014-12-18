@@ -17,6 +17,13 @@
             android:layout_height="match_parent"
             android:src="@drawable/pralines_gray"
             />
+        <ImageView
+            android:id="@+id/completed_gamephoto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/pralines_faces"
+            android:alpha="0"
+            />
     </RelativeLayout>
 
 

@@ -108,9 +108,14 @@ public class GameController {
     }
 
     private void restartGame() {
+        setCompletePhotoAlpha(0);
         game.findViewById(R.id.puzzle_piece).setVisibility(View.VISIBLE);
         removeCompletedDudes();
         startGame();
+    }
+
+    private void setCompletePhotoAlpha(float alpha) {
+        game.findViewById(R.id.completed_gamephoto).setAlpha(alpha);
     }
 
     private void removeCompletedDudes() {
@@ -164,7 +169,8 @@ public class GameController {
 
     private void gameFinished() {
         game.findViewById(R.id.puzzle_piece).setVisibility(View.GONE);
-
+        setCompletePhotoAlpha(1);
+        
         int duration = Toast.LENGTH_SHORT;
         int[] time = elapsedTime();
         Toast toast = Toast.makeText(context, String.format("Game finished, time: %d:%d", time[0], time[1]), duration);
