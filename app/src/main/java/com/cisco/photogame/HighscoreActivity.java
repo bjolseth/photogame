@@ -2,6 +2,7 @@ package com.cisco.photogame;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -23,11 +24,15 @@ import java.util.List;
 public class HighscoreActivity extends Activity {
 
     private int seconds;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.highscore);
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.trololo3);
+        mediaPlayer.start();
 
         findViewById(R.id.go_back_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +64,14 @@ public class HighscoreActivity extends Activity {
             }
         });
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        mediaPlayer = null;
     }
 
     private void showList() {

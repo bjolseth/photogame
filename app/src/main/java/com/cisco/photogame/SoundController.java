@@ -53,7 +53,7 @@ public class SoundController {
     private void play(int index) {
         int priority = 1;
         int loop = 0;
-        int volume = 3;
+        int volume = audioManager.getStreamVolume(AudioManager.STREAM_RING);
         float pitch = 1f;
         soundPool.play(soundPoolMap.get(index), volume, volume, priority, loop, pitch);
 
