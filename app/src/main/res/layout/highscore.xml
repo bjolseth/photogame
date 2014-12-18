@@ -14,7 +14,7 @@
         android:layout_marginTop="20dp"
         android:textColor="@color/lightgray"
         android:textSize="10sp"
-        android:text="Your score"
+        android:text="@string/your_score"
         />
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_centerHorizontal="true"
         android:textColor="@color/blue"
         android:textSize="45sp"
-        android:text="03:27"
+        android:text="@string/highscore_time"
         />
 
     <EditText
@@ -41,7 +41,7 @@
         android:gravity="center"
         android:background="#0000"
         android:imeOptions="flagNoExtractUi|actionDone"
-        android:hint="Cisco username"
+        android:hint="@string/username"
 
         />
 
