@@ -21,11 +21,12 @@ public class GameController {
     private List<Dude> dudes;
     private View game;
     private static final int ACCEPTED_DISTANCE = 80;
-    private Dude currentPiece;
+    private Dude currentDude;
     private TextView dbgText;
     private Context context;
     private long startTime;
     private int totalDudeCount;
+//    private boolean isOnTheSpot = false;
 
     // todo should be able to calculate this from image scaling measurements at runtime
     private final float scaleFactor = 1.37f;
@@ -47,8 +48,9 @@ public class GameController {
         //int index = (int) Math.floor(Math.random() * dudes.size());
         int index = 0;
         if (dudes.get(index) != null) {
-            currentPiece = dudes.remove(index);
-            ((ImageView) game.findViewById(R.id.puzzle_piece)).setImageResource(currentPiece.getBitmapId());
+            currentDude = dudes.remove(index);
+            soundController.loadSound(currentDude.getAudioId());
+            ((ImageView) game.findViewById(R.id.puzzle_piece)).setImageResource(currentDude.getBitmapId());
             updateProgress();
         }
         else
@@ -63,23 +65,35 @@ public class GameController {
         timer.postDelayed(updateTimerTask, 1000);
         ((TextView) game.findViewById(R.id.duration)).setText("00:00");
         ((TextView) game.findViewById(R.id.restart_button)).setText("Restart");
+
+        soundController.playSound();
     }
 
     private boolean checkSpot(Point pos, Dude dude) {
         int dx = pos.x - dude.getPosition().x;
         int dy = pos.y - dude.getPosition().y;
         int dist = (int) Math.sqrt(dx*dx + dy*dy);
-        //debug("distance %d", dist);
-        //dbgText.setText("distance: " + dist);
-        debug2("%s Point(%d, %d) ", dude.getName(), pos.x, pos.y, dist);
 
-        if (dist < ACCEPTED_DISTANCE)
-            dbgText.setBackgroundColor(0x99009900);
-        else
-            dbgText.setBackgroundColor(0x99990000);
+        debug2("%s Point(%d, %d) dist=%d", dude.getName(), pos.x, pos.y, dist);
 
-        //return (dist < ACCEPTED_DISTANCE);
-        return true; // TODO REMOVE!!! Just for finding locations quickly
+        boolean isOnTheSpotNow = dist < ACCEPTED_DISTANCE;
+
+//        TextView duration = (TextView) game.findViewById(R.id.duration);
+//        ImageView image = (ImageView) game.findViewById(R.id.gamephoto);
+//        // Entered the right spot
+//        if (! isOnTheSpot && isOnTheSpotNow) {
+//            duration.setTextColor(context.getResources().getColor(R.color.green));
+//            //image.setImageResource(R.drawable.pralines2);
+//        }
+//        // Left the right spot
+//        else if (isOnTheSpot && ! isOnTheSpotNow) {
+//            duration.setTextColor(context.getResources().getColor(R.color.red));
+//            //image.setImageResource(R.drawable.pralines_gray2);
+//        }
+//
+//        isOnTheSpot = isOnTheSpotNow;
+
+        return isOnTheSpotNow;
     }
 
     private void setListeners() {
@@ -89,7 +103,7 @@ public class GameController {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    view.startDrag(null, new DragShadow(view, currentPiece.getBitmapId(), scaleFactor), view, 0);
+                    view.startDrag(null, new DragShadow(view, currentDude.getBitmapId(), scaleFactor), view, 0);
                 }
                 return true;
             }
@@ -99,12 +113,17 @@ public class GameController {
         gameBoard.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
+                Point drop = new Point((int) dragEvent.getX(), (int) dragEvent.getY());
+
                 if (dragEvent.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
-                    //checkSpot(new Point((int) dragEvent.getX(), (int) dragEvent.getY()), currentPiece);
+                    if (checkSpot(drop, currentDude)) {
+                        spotFound(drop, currentDude);
+                    }
+
                 } else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
-                    Point drop = new Point((int) dragEvent.getX(), (int) dragEvent.getY());
-                    if (checkSpot(drop, currentPiece))
-                        spotFound(drop, currentPiece);
+
+                    if (checkSpot(drop, currentDude))
+                        spotFound(drop, currentDude);
                 }
                 return true;
             }
@@ -120,6 +139,7 @@ public class GameController {
 
     private void restartGame() {
         stopTimerTask();
+//        isOnTheSpot = false;
         setCompletePhotoAlpha(0);
         game.findViewById(R.id.puzzle_piece).setVisibility(View.VISIBLE);
         removeCompletedDudes();
@@ -150,6 +170,7 @@ public class GameController {
     private void spotFound(Point pos, Dude dude) {
         //debug("Found spot for %s", dude.getName());
         addPieceToBoard(pos, dude);
+        soundController.playSound();
 
         if (! dudes.isEmpty()) {
             setNextPiece();
@@ -196,6 +217,7 @@ public class GameController {
         game.findViewById(R.id.puzzle_piece).setVisibility(View.GONE);
         ((TextView) game.findViewById(R.id.progress)).setText(totalDudeCount + "/" + totalDudeCount);
         setCompletePhotoAlpha(1);
+        removeCompletedDudes();
 
         int[] time = elapsedTime();
         Intent highscore = new Intent(context, HighscoreActivity.class);

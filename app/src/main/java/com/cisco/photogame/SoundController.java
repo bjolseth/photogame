@@ -4,8 +4,6 @@ package com.cisco.photogame;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.util.Log;
-
 import java.util.HashMap;
 
 public class SoundController {
@@ -16,11 +14,15 @@ public class SoundController {
     private HashMap<Integer, Integer> soundPoolMap;
     private AudioManager audioManager;
     private int singleIndex = 0;
+    private static final int VOLUME = 2;
 
     public SoundController(Context context) {
         this.context = context;
         initSounds();
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+        // who knows....
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, VOLUME, 0);
     }
 
     private void initSounds() {
@@ -36,8 +38,6 @@ public class SoundController {
     }
 
     public void playSound() {
-        //int streamVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-
         int priority = 1;
         int loop = 0;
         int volume = 3;

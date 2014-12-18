@@ -21,7 +21,7 @@
             android:id="@+id/completed_gamephoto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/pralines_faces"
+            android:src="@drawable/pralines_faces2"
             android:alpha="0"
             />
     </RelativeLayout>
@@ -42,7 +42,7 @@
             android:layout_alignParentTop="true"
             android:textColor="@color/red"
             android:text="@string/time"
-            android:textSize="30sp"
+            android:textSize="50sp"
             android:gravity="right" />
         <TextView
             android:id="@+id/progress"
@@ -54,7 +54,7 @@
             android:gravity="right"
             android:layout_alignRight="@id/duration"
             android:layout_alignParentEnd="false"
-            android:layout_marginTop="3dp" />
+            android:layout_marginTop="3dp" android:textSize="20sp"/>
 
         <ImageView
             android:id="@+id/puzzle_piece"
@@ -85,7 +85,7 @@
             android:layout_marginBottom="50dp"
             android:text="@string/debug"
             android:gravity="center_horizontal"
-            android:visibility="visible"/>
+            android:visibility="invisible"/>
     </RelativeLayout>
 
 
