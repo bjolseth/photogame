@@ -1,6 +1,7 @@
 package com.cisco.photogame;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -9,11 +10,9 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -37,7 +36,6 @@ public class GameController {
         this.timer = new Handler();
         this.highscore = new Highscore(context);
         this.dbgText = (TextView) game.findViewById(R.id.debug);
-
         setListeners();
     }
 
@@ -93,8 +91,7 @@ public class GameController {
             public boolean onDrag(View view, DragEvent dragEvent) {
                 if (dragEvent.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
                     checkSpot(new Point((int) dragEvent.getX(), (int) dragEvent.getY()), currentPiece);
-                }
-                else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
+                } else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
                     Point drop = new Point((int) dragEvent.getX(), (int) dragEvent.getY());
                     if (checkSpot(drop, currentPiece))
                         spotFound(drop, currentPiece);
@@ -138,12 +135,10 @@ public class GameController {
 
         frame.addView(mainPhoto);
         frame.addView(facesPhoto);
-
     }
 
     private void spotFound(Point pos, Dude dude) {
         debug("Found spot for %s", dude.getName());
-
         addPieceToBoard(pos, dude);
 
         if (! dudes.isEmpty()) {
@@ -193,13 +188,10 @@ public class GameController {
         ((TextView) game.findViewById(R.id.progress)).setText(totalDudeCount + "/" + totalDudeCount);
         setCompletePhotoAlpha(1);
 
-        int duration = Toast.LENGTH_SHORT;
-        int[] time = elapsedTime();
-        Toast toast = Toast.makeText(context, String.format("Game finished, time: %d:%d", time[0], time[1]), duration);
-        toast.show();
-
-        highscore.saveHighscore(time[2], "time=" + time[2]);
-        highscore.debugHighscore();
+        Intent highscore = new Intent(context, HighscoreActivity.class);
+        context.startActivity(highscore);
+//        highscore.saveHighscore(time[2], "time=" + time[2]);
+//        highscore.debugHighscore();
     }
 
     public void debug2(String message, Object ... args) {

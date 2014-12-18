@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darkgray"
+    >
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/lightgray"
+        android:textSize="10sp"
+        android:text="Your score"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/blue"
+        android:textSize="45sp"
+        android:text="03:27"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="@color/lightgray"
+        android:textSize="25sp"
+        android:padding="20dp"
+        android:inputType="textEmailAddress"
+        android:singleLine="true"
+        android:gravity="center"
+        android:background="#0000"
+        android:imeOptions="flagNoExtractUi|actionSend"
+        android:text="Tore"
+        />
+
+</RelativeLayout>
