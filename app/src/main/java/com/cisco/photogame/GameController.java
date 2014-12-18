@@ -25,17 +25,19 @@ public class GameController {
     private TextView dbgText;
     private Context context;
     private long startTime;
-    private Highscore highscore;
     private int totalDudeCount;
-    private final float scaleFactor = 0.4f; // todo find out what this actually should be on iltempo
+    private final float scaleFactor = 1.21f; // todo find out what this actually should be on iltempo
     private Handler timer;
+    private SoundController soundController;
 
     public GameController(View game) {
         this.game = game;
         this.context = game.getContext();
         this.timer = new Handler();
-        this.highscore = new Highscore(context);
         this.dbgText = (TextView) game.findViewById(R.id.debug);
+        this.soundController = new SoundController(context);
+
+        soundController.loadSound(R.raw.acideron);
         setListeners();
     }
 
@@ -54,6 +56,7 @@ public class GameController {
         timer.postDelayed(updateTimerTask, 1000);
         ((TextView) game.findViewById(R.id.duration)).setText("00:00");
         ((TextView) game.findViewById(R.id.restart_button)).setText("Restart");
+        soundController.playSound();
     }
 
     private boolean checkSpot(Point pos, Dude dude) {
@@ -62,14 +65,15 @@ public class GameController {
         int dist = (int) Math.sqrt(dx*dx + dy*dy);
         //debug("distance %d", dist);
         //dbgText.setText("distance: " + dist);
-        debug2("%d, %d - %d", pos.x, pos.y, dist);
+        debug2("%s Point(%d, %d) ", dude.getName(), pos.x, pos.y, dist);
 
         if (dist < ACCEPTED_DISTANCE)
             dbgText.setBackgroundColor(0x99009900);
         else
             dbgText.setBackgroundColor(0x99990000);
 
-        return (dist < ACCEPTED_DISTANCE);
+        //return (dist < ACCEPTED_DISTANCE);
+        return true; // TODO REMOVE!!! Just for finding locations quickly
     }
 
     private void setListeners() {
@@ -85,12 +89,12 @@ public class GameController {
             }
         });
 
-        View gameBoard = game.findViewById(R.id.gamephoto);
+        View gameBoard = game.findViewById(R.id.photo_container);
         gameBoard.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
                 if (dragEvent.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
-                    checkSpot(new Point((int) dragEvent.getX(), (int) dragEvent.getY()), currentPiece);
+                    //checkSpot(new Point((int) dragEvent.getX(), (int) dragEvent.getY()), currentPiece);
                 } else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
                     Point drop = new Point((int) dragEvent.getX(), (int) dragEvent.getY());
                     if (checkSpot(drop, currentPiece))
@@ -167,8 +171,7 @@ public class GameController {
         p.setMargins(pos.x - w/2, pos.y - h/2, 0, 0);
         view.setLayoutParams(p);
         ((ViewGroup) game.findViewById(R.id.photo_container)).addView(view);
-
-    }
+        }
 
     private int[] elapsedTime() {
         int time = (int) ((System.currentTimeMillis() - startTime) / 1000);
@@ -188,18 +191,15 @@ public class GameController {
         ((TextView) game.findViewById(R.id.progress)).setText(totalDudeCount + "/" + totalDudeCount);
         setCompletePhotoAlpha(1);
 
-
         int[] time = elapsedTime();
         Intent highscore = new Intent(context, HighscoreActivity.class);
         highscore.putExtra("time", time[2]);
         context.startActivity(highscore);
-//        highscore.saveHighscore(time[2], "time=" + time[2]);
-//        highscore.debugHighscore();
     }
 
     public void debug2(String message, Object ... args) {
         ((TextView) game.findViewById(R.id.debug)).setText(String.format(message, args));
-        //Log.i("photogame", String.format(message, args));
+        Log.i("photogame", String.format(message, args));
     }
 
     public static void debug(String message, Object ... args) {
