@@ -4,6 +4,8 @@ package com.cisco.photogame;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.util.Log;
+
 import java.util.HashMap;
 
 public class SoundController {
@@ -40,6 +42,7 @@ public class SoundController {
     }
 
     public void playDoh() {
+        Log.i("photogame", "volume=" + audioManager.getStreamVolume(AudioManager.STREAM_RING));
         play(DOH_INDEX);
     }
 

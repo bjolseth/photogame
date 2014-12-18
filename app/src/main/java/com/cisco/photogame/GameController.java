@@ -74,7 +74,7 @@ public class GameController {
         int dy = pos.y - dude.getPosition().y;
         int dist = (int) Math.sqrt(dx*dx + dy*dy);
 
-        debug2("%s Point(%d, %d) dist=%d", dude.getName(), pos.x, pos.y, dist);
+//        debug2("%s Point(%d, %d) dist=%d", dude.getName(), pos.x, pos.y, dist);
 
         boolean isOnTheSpotNow = dist < ACCEPTED_DISTANCE;
 
@@ -146,9 +146,10 @@ public class GameController {
 
         if (show && ! isAlreadyVisible) {
             RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) mark.getLayoutParams();
-            p.leftMargin = dude.getPosition().x - 50;
-            p.topMargin = dude.getPosition().y - 50;
+            p.leftMargin = dude.getPosition().x - 65;
+            p.topMargin = dude.getPosition().y - 65;
             mark.setLayoutParams(p);
+            mark.bringToFront();
             mark.setVisibility(View.VISIBLE);
         }
 
